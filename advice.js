@@ -1,63 +1,57 @@
-/**
- * Return a specific advice string based on temperature
- */
-const getWeatherAdvice = (temp) => {
-    if (temp === 27) return "the Best Day Ever! 🌟";
-    if (temp > 30)  return "Too Hot 🥵";
-    if (temp >= 15) return "Perfect ☀️";
-    return "Too Cold ❄️";
-};
+async function getRealWeather() {
+            const city = document.getElementById('cityInput').value;
+            const cityDisplay = document.getElementById('cityNameDisplay');
+            const tempDisplay = document.getElementById('main-temp');
+            const descDisplay = document.getElementById('description');
+            const iconDiv = document.getElementById('weather-icon');
+            const bentoGrid = document.getElementById('details');
 
-/**
- * Celsius to Fahrenheit conversion 
- */
-const convertToFahrenheit = (celsius) => (celsius * 9/5) + 32;
+            // --- CONFIG ---
+            const apiKey = 'a1b60601df153c437f15b93de795edc6'; 
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
 
-/**
- * Connect HTML inputs to the logic and trigger animations
- */
-function updateUI() {
-    // 1. Getting elements from the HTML
-    const nameInput = document.getElementById('userName');
-    const tempInput = document.getElementById('userTemp');
-    const display = document.getElementById('result');
-    const iconDiv = document.getElementById('weather-icon'); // The animation target
+            if (!city) {
+                descDisplay.innerText = "Please enter a city!";
+                return;
+            }
 
-    const name = nameInput.value;
-    const tempC = parseFloat(tempInput.value);
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("City not found");
+                const data = await response.json();
 
-    // 2. Guard Clause: Check for empty name or invalid temperature
-    if (!name || isNaN(tempC)) {
-        display.innerText = "Please enter both a name and a temperature.";
-        iconDiv.innerText = "❓";
-        iconDiv.className = ""; // Reset animation
-        return;
-    }
+                // 1. Update the Core UI
+                cityDisplay.innerText = data.name;
+                tempDisplay.innerText = `${Math.round(data.main.temp)}°C`;
+                descDisplay.innerText = data.weather[0].description;
+                bentoGrid.style.opacity = "1";
 
-    // 3. Reset state: Clear old animations before starting new ones
-    iconDiv.className = "";
+                // 2. Update Bento the Grid Values
+                document.getElementById('humidity').innerText = data.main.humidity;
+                document.getElementById('wind').innerText = data.wind.speed;
+                document.getElementById('pressure').innerText = data.main.pressure;
+                document.getElementById('visibility').innerText = (data.visibility / 1000).toFixed(1);
+                document.getElementById('feelsLike').innerText = Math.round(data.main.feels_like);
 
-    // 4. State Management: Trigger animations and set the emoji
-    if (tempC === 27) {
-        iconDiv.innerText = "🌟";
-        iconDiv.classList.add("perfect-animation");
-    } else if (tempC > 30) {
-        iconDiv.innerText = "🥵";
-        iconDiv.classList.add("hot-animation");
-    } else if (tempC >= 15) {
-        iconDiv.innerText = "☀️";
-        iconDiv.classList.add("perfect-animation");
-    } else {
-        iconDiv.innerText = "❄️";
-        iconDiv.classList.add("cold-animation");
-    }
+                // 3. Handle State-Specific Animations
+                const temp = data.main.temp;
+                iconDiv.className = ""; // Reset
+                
+                if (temp > 30) {
+                    iconDiv.innerText = "🥵";
+                    iconDiv.classList.add("hot-animation");
+                } else if (temp >= 15) {
+                    iconDiv.innerText = "☀️";
+                    iconDiv.classList.add("perfect-animation");
+                } else {
+                    iconDiv.innerText = "❄️";
+                    iconDiv.classList.add("cold-animation");
+                }
 
-    // 5. Calculating data
-    const advice = getWeatherAdvice(tempC);
-    const tempF = convertToFahrenheit(tempC);
-
-    // 6. Updating the Screen
-    display.innerHTML = `Hey ${name}!<br>
-                         It's ${tempC}°C (<strong>${tempF.toFixed(1)}°F</strong>) today.<br>
-                         The weather is <strong>${advice}</strong>.`;
-}
+            } catch (err) {
+                descDisplay.innerHTML = `<span style="color: #f87171;">${err.message}</span>`;
+                bentoGrid.style.opacity = "0";
+                iconDiv.innerText = "⚠️";
+                iconDiv.className = "";
+            }
+        }
