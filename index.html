@@ -3,20 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Consultant </title>
+    <title>Weather Informant </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="card">
-        <div id="weather-icon">✨</div>
-        
-        <h2>Weather Informant</h2>
-        <input type="text" id="userName" placeholder="Enter your name">
-        <input type="number" id="userTemp" placeholder="Temperature (°C)">
-        <button onclick="updateUI()">Check Weather</button>
-        
-        <div id="result">Enter your details above!</div>
+        <header class="main-display">
+            <div id="weather-icon">✨</div>
+            <h2 id="cityNameDisplay">Weather Informant</h2>
+            <div id="main-temp">--°C</div>
+            <p id="description">Ready for your forecast?</p>
+        </header>
+
+        <section class="controls">
+            <input type="text" id="cityInput" placeholder="Enter city name..." aria-label="City Name">
+            <button onclick="getRealWeather()">Fetch Weather</button>
+        </section>
+
+        <footer id="details" class="bento-grid">
+            <div class="bento-item">
+                <span class="label">💧 Humidity</span>
+                <span class="value"><strong id="humidity">0</strong>%</span>
+            </div>
+            <div class="bento-item">
+                <span class="label">🌬️ Wind</span>
+                <span class="value"><strong id="wind">0</strong> <small>m/s</small></span>
+            </div>
+            <div class="bento-item">
+                <span class="label">⏲️ Pressure</span>
+                <span class="value"><strong id="pressure">0</strong> <small>hPa</small></span>
+            </div>
+            <div class="bento-item">
+                <span class="label">👁️ Visibility</span>
+                <span class="value"><strong id="visibility">0</strong> <small>km</small></span>
+            </div>
+            <div class="bento-item wide">
+                <span class="label">🌡️ Feels Like</span>
+                <span class="value"><strong id="feelsLike">0</strong>°C</span>
+            </div>
+        </footer>
     </div>
 
     <script src="advice.js"></script>
