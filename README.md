@@ -3,7 +3,7 @@ A responsive web application that provides personalized weather advice based on 
 my understanding of JavaScript logic, CSS3 styling, and DOM manipulation.
 
 ##  Live Demo
-
+https://lokeny2.github.io/Weather-Consultant/
 
 ## Features
 - **Dynamic Advice:** Provides unique feedback based on temperature ranges.
