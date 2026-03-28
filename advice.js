@@ -1,4 +1,4 @@
-async function getRealWeather() {
+        async function getRealWeather() {
             const city = document.getElementById('cityInput').value;
             const cityDisplay = document.getElementById('cityNameDisplay');
             const tempDisplay = document.getElementById('main-temp');
@@ -6,38 +6,44 @@ async function getRealWeather() {
             const iconDiv = document.getElementById('weather-icon');
             const bentoGrid = document.getElementById('details');
 
-            // --- CONFIG ---
-            const apiKey = 'a1b60601df153c437f15b93de795edc6'; 
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+            // Replace with your actual OpenWeatherMap API Key
+            const apiKey = 'a1b60601df153c437f15b93de795edc6';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
 
             if (!city) {
-                descDisplay.innerText = "Please enter a city!";
+                descDisplay.innerText = "Please enter a city name.";
                 return;
             }
 
             try {
+                descDisplay.innerText = "Consulting the skies...";
+                
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("City not found");
                 const data = await response.json();
 
-                // 1. Update the Core UI
+                // 1. Update Core UI
                 cityDisplay.innerText = data.name;
                 tempDisplay.innerText = `${Math.round(data.main.temp)}°C`;
                 descDisplay.innerText = data.weather[0].description;
-                bentoGrid.style.opacity = "1";
 
-                // 2. Update Bento the Grid Values
+                // 2. Animate Grid Visibility
+                bentoGrid.style.opacity = "1";
+                bentoGrid.style.transform = "translateY(0)";
+
+                // 3. Populate Bento Grid
                 document.getElementById('humidity').innerText = data.main.humidity;
                 document.getElementById('wind').innerText = data.wind.speed;
-                document.getElementById('pressure').innerText = data.main.pressure;
-                document.getElementById('visibility').innerText = (data.visibility / 1000).toFixed(1);
                 document.getElementById('feelsLike').innerText = Math.round(data.main.feels_like);
 
-                // 3. Handle State-Specific Animations
+                // 4. State-Based Animations
                 const temp = data.main.temp;
                 iconDiv.className = ""; // Reset
                 
-                if (temp > 30) {
+                if (temp === 27) {
+                    iconDiv.innerText = "🌟";
+                    iconDiv.classList.add("perfect-animation");
+                } else if (temp > 30) {
                     iconDiv.innerText = "🥵";
                     iconDiv.classList.add("hot-animation");
                 } else if (temp >= 15) {
@@ -49,9 +55,15 @@ async function getRealWeather() {
                 }
 
             } catch (err) {
-                descDisplay.innerHTML = `<span style="color: #f87171;">${err.message}</span>`;
+                descDisplay.innerHTML = `<span style="color: #fb7185;">${err.message}</span>`;
                 bentoGrid.style.opacity = "0";
+                bentoGrid.style.transform = "translateY(15px)";
                 iconDiv.innerText = "⚠️";
                 iconDiv.className = "";
             }
         }
+
+        // Allow "Enter" key to trigger search
+        document.getElementById('cityInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') getRealWeather();
+        });
