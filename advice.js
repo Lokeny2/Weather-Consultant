@@ -6,7 +6,7 @@
             const iconDiv = document.getElementById('weather-icon');
             const bentoGrid = document.getElementById('details');
 
-            // Replace with your actual OpenWeatherMap API Key
+            
             const apiKey = 'a1b60601df153c437f15b93de795edc6';
             const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
 
