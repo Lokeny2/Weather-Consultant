@@ -93,8 +93,7 @@ strong {
 }
 
 /* --- KEYFRAME ANIMATIONS --- */
-
-/* 1. Hot: Pulsing and Glowing */
+      /* 1. Hot: Pulsing and Glowing */
 @keyframes sun-pulse {
     0% { transform: scale(1); filter: drop-shadow(0 0 5px orange); }
     50% { transform: scale(1.15); filter: drop-shadow(0 0 20px yellow); }
@@ -104,7 +103,8 @@ strong {
     animation: sun-pulse 2s infinite ease-in-out;
 }
 
-/* 2. Cold: Rapid Shiver */
+
+       /* 2. Cold: Rapid Shiver */
 @keyframes shiver {
     0% { transform: translateX(0); }
     25% { transform: translateX(-3px) rotate(-1deg); }
@@ -115,7 +115,7 @@ strong {
     animation: shiver 0.15s infinite;
 }
 
-/* 3. Perfect: Gentle Floating */
+       /* 3. Perfect: Gentle Floating */
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-12px); }
