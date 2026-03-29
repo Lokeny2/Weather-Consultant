@@ -100,7 +100,7 @@ async function getRealWeather() {
     const iconDiv     = document.getElementById('weather-icon');
     const bentoGrid   = document.getElementById('details');
 
-    const apiKey = 'a1b60601df153c437f15b93de795edc6';
+    const apiKey = '';
     const url    = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
 
     if (!city) {
