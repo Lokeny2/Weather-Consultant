@@ -4,12 +4,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     color: #f8fafc;
-    overflow: hidden; /* Viewport-fixed */
-    
-    /* Deep multi-layered radial gradient */
+    overflow-x: hidden;
+
     background-color: #020617;
     background-image: 
         radial-gradient(at 0% 0%, hsla(217, 32%, 17%, 1) 0, transparent 50%), 
@@ -26,11 +25,36 @@ body {
     padding: 2.5rem;
     border-radius: 32px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
+    transition: opacity 0.3s ease;
 }
 
+/* --- LOADING STATE --- */
+.card.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(56, 189, 248, 0.3);
+    border-top-color: #38bdf8;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+/* --- HEADER DISPLAY --- */
 #weather-icon {
     font-size: 5.5rem;
     margin-bottom: 0.5rem;
@@ -44,6 +68,14 @@ body {
     letter-spacing: -2px;
 }
 
+.temp-secondary {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #475569;
+    letter-spacing: 0;
+    margin-left: 8px;
+}
+
 h2 {
     margin: 0;
     font-size: 1.4rem;
@@ -53,8 +85,24 @@ h2 {
 #description {
     text-transform: capitalize;
     color: #64748b;
-    margin: 0.5rem 0 2rem 0;
+    margin: 0.5rem 0 0 0;
 }
+
+/* --- FUN DESCRIPTOR --- */
+.descriptor {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin: 0.25rem 0 1.75rem 0;
+    min-height: 1.4rem;
+    letter-spacing: 0.3px;
+    transition: opacity 0.4s ease;
+}
+
+.descriptor.hot   { color: #fb923c; }
+.descriptor.cold  { color: #93c5fd; }
+.descriptor.great { color: #38bdf8; }
+.descriptor.mild  { color: #86efac; }
 
 /* --- CONTROLS --- */
 .controls {
@@ -72,6 +120,8 @@ input {
     color: white;
     outline: none;
     transition: 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 input:focus {
@@ -89,6 +139,11 @@ button {
     cursor: pointer;
     text-transform: uppercase;
     transition: 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 button:hover {
@@ -155,3 +210,19 @@ button:hover {
     50% { transform: translateY(-15px); }
 }
 .perfect-animation { animation: float 4s infinite ease-in-out; }
+
+/* --- MOBILE --- */
+@media (max-width: 480px) {
+    body {
+        align-items: flex-start;
+        padding: 1.5rem 1rem;
+    }
+
+    .card {
+        padding: 1.75rem 1.25rem;
+        border-radius: 24px;
+    }
+
+    #weather-icon { font-size: 4rem; }
+    #main-temp { font-size: 3rem; }
+}
