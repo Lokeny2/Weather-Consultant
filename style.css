@@ -19,15 +19,17 @@ body {
 
 /* --- GLASSMORPHISM CARD --- */
 .card {
-    background: rgba(30, 41, 59, 0.6);
+    .card {
+    background: rgba(45, 35, 60, 0.75);
+    border: 1px solid rgba(192, 132, 252, 0.30);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                0 0 30px 4px rgba(167, 100, 240, 0.12);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 2.5rem;
     border-radius: 32px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     width: 100%;
     max-width: 400px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
     transition: opacity 0.3s ease;
 }
