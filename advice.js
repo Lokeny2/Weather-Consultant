@@ -1,69 +1,84 @@
-        async function getRealWeather() {
-            const city = document.getElementById('cityInput').value;
-            const cityDisplay = document.getElementById('cityNameDisplay');
-            const tempDisplay = document.getElementById('main-temp');
-            const descDisplay = document.getElementById('description');
-            const iconDiv = document.getElementById('weather-icon');
-            const bentoGrid = document.getElementById('details');
+      async function getRealWeather() {
+    const nameInput  = document.getElementById('nameInput');
+    const cityInput  = document.getElementById('cityInput');
+    const city       = cityInput.value.trim();
+    const name       = nameInput.value.trim();
 
-            
-            const apiKey = 'a1b60601df153c437f15b93de795edc6';
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
+    const cityDisplay = document.getElementById('cityNameDisplay');
+    const tempC       = document.getElementById('temp-c');
+    const tempF       = document.getElementById('temp-f');
+    const descDisplay = document.getElementById('description');
+    const iconDiv     = document.getElementById('weather-icon');
+    const bentoGrid   = document.getElementById('details');
 
-            if (!city) {
-                descDisplay.innerText = "Please enter a city name.";
-                return;
-            }
+    const apiKey = 'a1b60601df153c437f15b93de795edc6';
+    const url    = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`;
 
-            try {
-                descDisplay.innerText = "Consulting the skies...";
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("City not found");
-                const data = await response.json();
+    if (!city) {
+        descDisplay.textContent = 'Please enter a city name.';
+        return;
+    }
 
-                // 1. Update Core UI
-                cityDisplay.innerText = data.name;
-                tempDisplay.innerText = `${Math.round(data.main.temp)}°C`;
-                descDisplay.innerText = data.weather[0].description;
+    try {
+        descDisplay.textContent = 'Consulting the skies...';
 
-                // 2. Animate Grid Visibility
-                bentoGrid.style.opacity = "1";
-                bentoGrid.style.transform = "translateY(0)";
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('City not found. Try again.');
+        const data = await response.json();
 
-                // 3. Populate Bento Grid
-                document.getElementById('humidity').innerText = data.main.humidity;
-                document.getElementById('wind').innerText = data.wind.speed;
-                document.getElementById('feelsLike').innerText = Math.round(data.main.feels_like);
+        const temp      = Math.round(data.main.temp);
+        const feelsLike = Math.round(data.main.feels_like);
+        const fahrenheit = Math.round((temp * 9 / 5) + 32);
 
-                // 4. State-Based Animations
-                const temp = data.main.temp;
-                iconDiv.className = ""; // Reset
-                
-                if (temp === 27) {
-                    iconDiv.innerText = "🌟";
-                    iconDiv.classList.add("perfect-animation");
-                } else if (temp > 30) {
-                    iconDiv.innerText = "🥵";
-                    iconDiv.classList.add("hot-animation");
-                } else if (temp >= 15) {
-                    iconDiv.innerText = "☀️";
-                    iconDiv.classList.add("perfect-animation");
-                } else {
-                    iconDiv.innerText = "❄️";
-                    iconDiv.classList.add("cold-animation");
-                }
+        // 1. Greeting — name if provided, else it falls back to generic
+        const greeting = name ? `Hey ${name}!` : `Hey there!`;
+        cityDisplay.textContent = `${greeting} · ${data.name}`;
 
-            } catch (err) {
-                descDisplay.innerHTML = `<span style="color: #fb7185;">${err.message}</span>`;
-                bentoGrid.style.opacity = "0";
-                bentoGrid.style.transform = "translateY(15px)";
-                iconDiv.innerText = "⚠️";
-                iconDiv.className = "";
-            }
+        // 2. Temperature — both units 
+        tempC.textContent = temp;
+        tempF.textContent = `(${fahrenheit}°F)`;
+
+        // 3. Description
+        descDisplay.textContent = data.weather[0].description;
+
+        // 4. Bento grid
+        bentoGrid.style.opacity   = '1';
+        bentoGrid.style.transform = 'translateY(0)';
+        document.getElementById('humidity').textContent  = data.main.humidity;
+        document.getElementById('wind').textContent      = data.wind.speed;
+        document.getElementById('feelsLike').textContent = feelsLike;
+
+        // 5. Icon + animation
+        iconDiv.className = '';
+        if (temp >= 30) {
+            iconDiv.textContent = '🥵';
+            iconDiv.classList.add('hot-animation');
+        } else if (temp === 27 || (temp >= 25 && temp <= 28)) {
+            iconDiv.textContent = '🌟';
+            iconDiv.classList.add('perfect-animation');
+        } else if (temp >= 15) {
+            iconDiv.textContent = '☀️';
+            iconDiv.classList.add('perfect-animation');
+        } else {
+            iconDiv.textContent = '❄️';
+            iconDiv.classList.add('cold-animation');
         }
 
-        // Allow "Enter" key to trigger search
-        document.getElementById('cityInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') getRealWeather();
-        });
+    } catch (err) {
+        descDisplay.innerHTML = `<span style="color:#fb7185;">${err.message}</span>`;
+        bentoGrid.style.opacity   = '0';
+        bentoGrid.style.transform = 'translateY(15px)';
+        iconDiv.textContent = '⚠️';
+        iconDiv.className   = '';
+    }
+}
+
+// Enter on name field jumps to city field
+document.getElementById('nameInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('cityInput').focus();
+});
+
+// Enter on city field triggers a fetch
+document.getElementById('cityInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') getRealWeather();
+});
