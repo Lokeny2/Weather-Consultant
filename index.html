@@ -7,18 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="card">
         <header class="main-display">
-            <div id="weather-icon">✨</div>
-            <h2 id="cityNameDisplay">Weather Informant</h2>
-            <div id="main-temp">--°C</div>
+            <div id="weather-icon">🌤️</div>
+            <h2 id="cityNameDisplay">Weather Consultant</h2>
+            <div id="main-temp">
+                <span id="temp-c">--</span>°C
+                <span id="temp-f" class="temp-secondary"></span>
+            </div>
             <p id="description">Ready for your forecast?</p>
+            <p id="descriptor" class="descriptor"></p>
         </header>
 
         <section class="controls">
+            <input type="text" id="nameInput" placeholder="Your name..." autocomplete="off">
             <input type="text" id="cityInput" placeholder="Enter city name..." autocomplete="off">
-            <button onclick="getRealWeather()">Fetch Weather</button>
+            <button onclick="getRealWeather()">Check Weather</button>
         </section>
 
         <footer id="details" class="bento-grid">
@@ -36,7 +40,6 @@
             </div>
         </footer>
     </div>
-
     <script src="advice.js"></script>
 </body>
 </html>
