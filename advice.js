@@ -1,4 +1,4 @@
-   // THE HELPER FUNCTIONS
+   // --- HELPERS ---
 
 function getDescriptor(temp, conditions) {
     const c = conditions.toLowerCase();
@@ -48,14 +48,12 @@ function setLoadingState(isLoading) {
 function getIcon(temp, conditions) {
     const c = conditions.toLowerCase();
 
-    // Conditions checked first
-    if (c.includes('thunderstorm'))              return { icon: '⛈️', cls: 'perfect-animation' };
+    if (c.includes('thunderstorm'))                  return { icon: '⛈️', cls: 'perfect-animation' };
     if (c.includes('rain') || c.includes('drizzle')) return { icon: '🌧️', cls: 'perfect-animation' };
-    if (c.includes('snow'))                      return { icon: '❄️', cls: 'cold-animation'    };
-    if (c.includes('mist') || c.includes('fog')) return { icon: '🌫️', cls: 'perfect-animation' };
-    if (c.includes('cloud'))                     return { icon: '☁️', cls: 'perfect-animation' };
+    if (c.includes('snow'))                          return { icon: '❄️', cls: 'cold-animation'    };
+    if (c.includes('mist') || c.includes('fog'))     return { icon: '🌫️', cls: 'perfect-animation' };
+    if (c.includes('cloud'))                         return { icon: '☁️', cls: 'perfect-animation' };
 
-    // Clear sky — temperature decides
     if (temp >= 30) return { icon: '🥵', cls: 'hot-animation'     };
     if (temp >= 20) return { icon: '☀️', cls: 'perfect-animation' };
     if (temp >= 10) return { icon: '🌤️', cls: 'perfect-animation' };
@@ -63,7 +61,21 @@ function getIcon(temp, conditions) {
     return             { icon: '🥶', cls: 'cold-animation'    };
 }
 
-// MY MAIN FUNCTION 
+// --- TYPEWRITER CONTROLS ---
+
+function showWeather() {
+    clearTimeout(typeTimer);
+    document.getElementById('idle-display').classList.add('hidden');
+    document.getElementById('main-temp').classList.add('visible');
+}
+
+function showIdle() {
+    document.getElementById('main-temp').classList.remove('visible');
+    document.getElementById('idle-display').classList.remove('hidden');
+    type();
+}
+
+// --- MAIN FUNCTION ---
 
 async function getRealWeather() {
     const nameInput  = document.getElementById('nameInput');
@@ -121,11 +133,14 @@ async function getRealWeather() {
         document.getElementById('wind').textContent      = data.wind.speed;
         document.getElementById('feelsLike').textContent = feelsLike;
 
-        // 5. Icon 
+        // 5. Icon
         const { icon, cls: iconCls } = getIcon(temp, conditions);
         iconDiv.className   = '';
         iconDiv.textContent = icon;
         iconDiv.classList.add(iconCls);
+
+        // 6. Swap typewriter out, temperature in
+        showWeather();
 
     } catch (err) {
         descDisplay.innerHTML = `<span style="color:#fb7185;">${err.message}</span>`;
@@ -135,13 +150,15 @@ async function getRealWeather() {
         iconDiv.textContent = '⚠️';
         iconDiv.className   = '';
 
+        // Restore typewriter on error
+        showIdle();
+
     } finally {
-        // Runs whether the fetch succeeded or failed — button always resets
         setLoadingState(false);
     }
 }
 
-//  EVENT LISTENERS
+// --- EVENT LISTENERS ---
 
 document.getElementById('nameInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') document.getElementById('cityInput').focus();
