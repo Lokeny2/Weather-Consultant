@@ -19,7 +19,7 @@ body {
         radial-gradient(at 50% 100%, hsla(221, 45%, 12%, 1) 0, transparent 50%);
 }
 
-/* --- GLASSMORPHISM CARD --- */
+/* --- Weather CARD --- */
 .card {
     background: rgba(45, 35, 60, 0.75);
     backdrop-filter: blur(20px);
