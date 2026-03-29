@@ -1,4 +1,37 @@
-      async function getRealWeather() {
+     // THE HELPER FUNCTIONS
+
+function getDescriptor(temp, conditions) {
+    const c = conditions.toLowerCase();
+
+    // Conditions checked first — weather type
+    if (c.includes('thunderstorm')) return { text: '⛈️ Stay indoors today!',        cls: 'cold'  };
+    if (c.includes('drizzle'))      return { text: '🌦️ Light drizzle out there.',    cls: 'mild'  };
+    if (c.includes('rain'))         return { text: '🌧️ Grab your umbrella!',         cls: 'cold'  };
+    if (c.includes('snow'))         return { text: '❄️ It\'s a snow day!',           cls: 'cold'  };
+    if (c.includes('mist') || c.includes('fog'))
+                                    return { text: '🌫️ Misty and mysterious.',       cls: 'mild'  };
+
+    // Temperature checked second
+    if (temp >= 35) return { text: '🥵 Dangerously hot — stay hydrated!',           cls: 'hot'   };
+    if (temp >= 30) return { text: '☀️ Scorching! Sunscreen is a must.',            cls: 'hot'   };
+    if (temp >= 25 && temp <= 28)
+                    return { text: '🌟 The Best Day Ever!',                          cls: 'great' };
+    if (temp >= 20) return { text: '😎 Beautiful weather today!',                   cls: 'great' };
+    if (temp >= 15) return { text: '🍃 Nice and breezy out there.',                 cls: 'mild'  };
+    if (temp >= 10) return { text: '🧥 A little chilly — layer up.',                cls: 'cold'  };
+    if (temp >= 0)  return { text: '🥶 It\'s freezing out there!',                  cls: 'cold'  };
+
+    return             { text: '🧊 Bitterly cold — stay warm!',                     cls: 'cold'  };
+}
+
+function resetDescriptor() {
+    const descriptor    = document.getElementById('descriptor');
+    descriptor.textContent = '';
+    descriptor.className   = 'descriptor';
+}
+
+// MY MAIN FUNCTION 
+async function getRealWeather() {
     const nameInput  = document.getElementById('nameInput');
     const cityInput  = document.getElementById('cityInput');
     const city       = cityInput.value.trim();
@@ -8,6 +41,7 @@
     const tempC       = document.getElementById('temp-c');
     const tempF       = document.getElementById('temp-f');
     const descDisplay = document.getElementById('description');
+    const descriptor  = document.getElementById('descriptor');
     const iconDiv     = document.getElementById('weather-icon');
     const bentoGrid   = document.getElementById('details');
 
@@ -16,30 +50,36 @@
 
     if (!city) {
         descDisplay.textContent = 'Please enter a city name.';
+        resetDescriptor();
         return;
     }
 
     try {
         descDisplay.textContent = 'Consulting the skies...';
+        resetDescriptor();
 
         const response = await fetch(url);
         if (!response.ok) throw new Error('City not found. Try again.');
         const data = await response.json();
 
-        const temp      = Math.round(data.main.temp);
-        const feelsLike = Math.round(data.main.feels_like);
+        const temp       = Math.round(data.main.temp);
+        const feelsLike  = Math.round(data.main.feels_like);
         const fahrenheit = Math.round((temp * 9 / 5) + 32);
+        const conditions = data.weather[0].description;
 
-        // 1. Greeting — name if provided, else it falls back to generic
+        // 1. Greeting
         const greeting = name ? `Hey ${name}!` : `Hey there!`;
         cityDisplay.textContent = `${greeting} · ${data.name}`;
 
-        // 2. Temperature — both units 
+        // 2. Temperature — both units
         tempC.textContent = temp;
         tempF.textContent = `(${fahrenheit}°F)`;
 
-        // 3. Description
-        descDisplay.textContent = data.weather[0].description;
+        // 3. Description + descriptor
+        descDisplay.textContent = conditions;
+        const { text, cls }     = getDescriptor(temp, conditions);
+        descriptor.textContent  = text;
+        descriptor.className    = `descriptor ${cls}`;
 
         // 4. Bento grid
         bentoGrid.style.opacity   = '1';
@@ -53,7 +93,7 @@
         if (temp >= 30) {
             iconDiv.textContent = '🥵';
             iconDiv.classList.add('hot-animation');
-        } else if (temp === 27 || (temp >= 25 && temp <= 28)) {
+        } else if (temp >= 25 && temp <= 28) {
             iconDiv.textContent = '🌟';
             iconDiv.classList.add('perfect-animation');
         } else if (temp >= 15) {
@@ -66,6 +106,7 @@
 
     } catch (err) {
         descDisplay.innerHTML = `<span style="color:#fb7185;">${err.message}</span>`;
+        resetDescriptor();
         bentoGrid.style.opacity   = '0';
         bentoGrid.style.transform = 'translateY(15px)';
         iconDiv.textContent = '⚠️';
@@ -73,12 +114,11 @@
     }
 }
 
-// Enter on name field jumps to city field
+// EVENT LISTENERS
 document.getElementById('nameInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') document.getElementById('cityInput').focus();
 });
 
-// Enter on city field triggers a fetch
 document.getElementById('cityInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') getRealWeather();
 });
