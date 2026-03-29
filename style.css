@@ -19,19 +19,16 @@ body {
 
 /* --- GLASSMORPHISM CARD --- */
 .card {
-    background: rgba(48, 38, 65, 0.72);
+    background: rgba(45, 35, 60, 0.75);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 2.5rem;
     border-radius: 32px;
-    box-shadow:
-        0 25px 50px -12px rgba(0, 0, 0, 0.8),
-        0 0 0 1px rgba(192, 132, 252, 0.10),
-        0 0 32px 6px rgba(167, 100, 240, 0.13),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                0 0 30px 4px rgba(167, 100, 240, 0.12);
     width: 100%;
     max-width: 400px;
-    border: 1px solid rgba(192, 132, 252, 0.35);
+    border: 1px solid rgba(192, 132, 252, 0.30);
     text-align: center;
     transition: opacity 0.3s ease;
 }
@@ -70,7 +67,7 @@ body {
     font-weight: 800;
     color: #38bdf8;
     letter-spacing: -2px;
-    display: none;        /* hidden on load, shown by the JS after the first fetch that is made */
+    display: none;
 }
 
 #main-temp.visible {
