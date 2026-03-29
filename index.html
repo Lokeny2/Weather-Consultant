@@ -11,10 +11,18 @@
         <header class="main-display">
             <div id="weather-icon">🌤️</div>
             <h2 id="cityNameDisplay">Weather Consultant</h2>
+
+            <!-- Idle state -->
+            <div id="idle-display">
+                <p id="typewriter"></p>
+            </div>
+
+            <!-- Live temp -->
             <div id="main-temp">
                 <span id="temp-c">--</span>°C
                 <span id="temp-f" class="temp-secondary"></span>
             </div>
+
             <p id="description">Ready for your forecast?</p>
             <p id="descriptor" class="descriptor"></p>
         </header>
@@ -40,6 +48,52 @@
             </div>
         </footer>
     </div>
+
     <script src="advice.js"></script>
+
+    <script>
+        const phrases = [
+            "What's the weather like today?",
+            "Sunny skies or stormy nights?",
+            "Is it a jacket kind of day?",
+            "Let's consult the skies...",
+            "Hot cocoa or iced tea weather?",
+            "Will you need an umbrella?",
+            "Adventure awaits outside...",
+            "What will the clouds say today?"
+        ];
+
+        let phraseIndex = 0;
+        let charIndex   = 0;
+        let isDeleting  = false;
+        let typeTimer;
+
+        function type() {
+            const current = phrases[phraseIndex];
+
+            if (isDeleting) {
+                charIndex--;
+            } else {
+                charIndex++;
+            }
+
+            document.getElementById('typewriter').textContent = current.slice(0, charIndex);
+
+            let speed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIndex === current.length) {
+                speed      = 2000;  // pause at full phrase
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting  = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                speed       = 400;  // pause before next phrase
+            }
+
+            typeTimer = setTimeout(type, speed);
+        }
+
+        type();
+    </script>
 </body>
 </html>
