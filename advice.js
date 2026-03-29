@@ -3,6 +3,8 @@
 function getDescriptor(temp, conditions) {
     const c = conditions.toLowerCase();
 
+
+
     if (c.includes('thunderstorm')) return { text: '⛈️ Stay indoors today!',      cls: 'cold'  };
     if (c.includes('drizzle'))      return { text: '🌦️ Light drizzle out there.', cls: 'mild'  };
     if (c.includes('rain'))         return { text: '🌧️ Grab your umbrella!',       cls: 'cold'  };
@@ -21,6 +23,8 @@ function getDescriptor(temp, conditions) {
 
     return             { text: '🧊 Bitterly cold — stay warm!',           cls: 'cold'  };
 }
+
+
 
 function toFahrenheit(celsius) {
     return Math.round((celsius * 9 / 5) + 32);
@@ -48,6 +52,8 @@ function setLoadingState(isLoading) {
 function getIcon(temp, conditions) {
     const c = conditions.toLowerCase();
 
+
+
     if (c.includes('thunderstorm'))                  return { icon: '⛈️', cls: 'perfect-animation' };
     if (c.includes('rain') || c.includes('drizzle')) return { icon: '🌧️', cls: 'perfect-animation' };
     if (c.includes('snow'))                          return { icon: '❄️', cls: 'cold-animation'    };
@@ -60,6 +66,7 @@ function getIcon(temp, conditions) {
 
     return             { icon: '🥶', cls: 'cold-animation'    };
 }
+
 
 // --- TYPEWRITER CONTROLS ---
 
@@ -74,6 +81,8 @@ function showIdle() {
     document.getElementById('idle-display').classList.remove('hidden');
     type();
 }
+
+
 
 // --- MAIN FUNCTION ---
 
@@ -112,7 +121,9 @@ async function getRealWeather() {
         const feelsLike  = Math.round(data.main.feels_like);
         const conditions = data.weather[0].description;
 
-        // 1. Greeting
+  
+
+      // 1. Greeting
         const greeting = name ? `Hey ${name}!` : `Hey there!`;
         cityDisplay.textContent = `${greeting} · ${data.name}`;
 
@@ -157,6 +168,8 @@ async function getRealWeather() {
         setLoadingState(false);
     }
 }
+
+
 
 // --- EVENT LISTENERS ---
 
