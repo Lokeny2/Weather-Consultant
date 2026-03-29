@@ -1,36 +1,70 @@
-     // THE HELPER FUNCTIONS
+   // THE HELPER FUNCTIONS
 
 function getDescriptor(temp, conditions) {
     const c = conditions.toLowerCase();
 
-    // Conditions checked first — weather type
-    if (c.includes('thunderstorm')) return { text: '⛈️ Stay indoors today!',        cls: 'cold'  };
-    if (c.includes('drizzle'))      return { text: '🌦️ Light drizzle out there.',    cls: 'mild'  };
-    if (c.includes('rain'))         return { text: '🌧️ Grab your umbrella!',         cls: 'cold'  };
-    if (c.includes('snow'))         return { text: '❄️ It\'s a snow day!',           cls: 'cold'  };
+    if (c.includes('thunderstorm')) return { text: '⛈️ Stay indoors today!',      cls: 'cold'  };
+    if (c.includes('drizzle'))      return { text: '🌦️ Light drizzle out there.', cls: 'mild'  };
+    if (c.includes('rain'))         return { text: '🌧️ Grab your umbrella!',       cls: 'cold'  };
+    if (c.includes('snow'))         return { text: '❄️ It\'s a snow day!',         cls: 'cold'  };
     if (c.includes('mist') || c.includes('fog'))
-                                    return { text: '🌫️ Misty and mysterious.',       cls: 'mild'  };
+                                    return { text: '🌫️ Misty and mysterious.',     cls: 'mild'  };
 
-    // Temperature checked second
-    if (temp >= 35) return { text: '🥵 Dangerously hot — stay hydrated!',           cls: 'hot'   };
-    if (temp >= 30) return { text: '☀️ Scorching! Sunscreen is a must.',            cls: 'hot'   };
+    if (temp >= 35) return { text: '🥵 Dangerously hot — stay hydrated!', cls: 'hot'   };
+    if (temp >= 30) return { text: '☀️ Scorching! Sunscreen is a must.',  cls: 'hot'   };
     if (temp >= 25 && temp <= 28)
-                    return { text: '🌟 The Best Day Ever!',                          cls: 'great' };
-    if (temp >= 20) return { text: '😎 Beautiful weather today!',                   cls: 'great' };
-    if (temp >= 15) return { text: '🍃 Nice and breezy out there.',                 cls: 'mild'  };
-    if (temp >= 10) return { text: '🧥 A little chilly — layer up.',                cls: 'cold'  };
-    if (temp >= 0)  return { text: '🥶 It\'s freezing out there!',                  cls: 'cold'  };
+                    return { text: '🌟 The Best Day Ever!',                cls: 'great' };
+    if (temp >= 20) return { text: '😎 Beautiful weather today!',         cls: 'great' };
+    if (temp >= 15) return { text: '🍃 Nice and breezy out there.',       cls: 'mild'  };
+    if (temp >= 10) return { text: '🧥 A little chilly — layer up.',      cls: 'cold'  };
+    if (temp >= 0)  return { text: '🥶 It\'s freezing out there!',        cls: 'cold'  };
 
-    return             { text: '🧊 Bitterly cold — stay warm!',                     cls: 'cold'  };
+    return             { text: '🧊 Bitterly cold — stay warm!',           cls: 'cold'  };
+}
+
+function toFahrenheit(celsius) {
+    return Math.round((celsius * 9 / 5) + 32);
 }
 
 function resetDescriptor() {
-    const descriptor    = document.getElementById('descriptor');
+    const descriptor       = document.getElementById('descriptor');
     descriptor.textContent = '';
     descriptor.className   = 'descriptor';
 }
 
+function setLoadingState(isLoading) {
+    const card = document.querySelector('.card');
+    const btn  = document.querySelector('button');
+
+    if (isLoading) {
+        card.classList.add('loading');
+        btn.innerHTML = '<span class="spinner"></span> Checking...';
+    } else {
+        card.classList.remove('loading');
+        btn.innerHTML = 'Check Weather';
+    }
+}
+
+function getIcon(temp, conditions) {
+    const c = conditions.toLowerCase();
+
+    // Conditions checked first
+    if (c.includes('thunderstorm'))              return { icon: '⛈️', cls: 'perfect-animation' };
+    if (c.includes('rain') || c.includes('drizzle')) return { icon: '🌧️', cls: 'perfect-animation' };
+    if (c.includes('snow'))                      return { icon: '❄️', cls: 'cold-animation'    };
+    if (c.includes('mist') || c.includes('fog')) return { icon: '🌫️', cls: 'perfect-animation' };
+    if (c.includes('cloud'))                     return { icon: '☁️', cls: 'perfect-animation' };
+
+    // Clear sky — temperature decides
+    if (temp >= 30) return { icon: '🥵', cls: 'hot-animation'     };
+    if (temp >= 20) return { icon: '☀️', cls: 'perfect-animation' };
+    if (temp >= 10) return { icon: '🌤️', cls: 'perfect-animation' };
+
+    return             { icon: '🥶', cls: 'cold-animation'    };
+}
+
 // MY MAIN FUNCTION 
+
 async function getRealWeather() {
     const nameInput  = document.getElementById('nameInput');
     const cityInput  = document.getElementById('cityInput');
@@ -55,7 +89,7 @@ async function getRealWeather() {
     }
 
     try {
-        descDisplay.textContent = 'Consulting the skies...';
+        setLoadingState(true);
         resetDescriptor();
 
         const response = await fetch(url);
@@ -64,7 +98,6 @@ async function getRealWeather() {
 
         const temp       = Math.round(data.main.temp);
         const feelsLike  = Math.round(data.main.feels_like);
-        const fahrenheit = Math.round((temp * 9 / 5) + 32);
         const conditions = data.weather[0].description;
 
         // 1. Greeting
@@ -73,7 +106,7 @@ async function getRealWeather() {
 
         // 2. Temperature — both units
         tempC.textContent = temp;
-        tempF.textContent = `(${fahrenheit}°F)`;
+        tempF.textContent = `(${toFahrenheit(temp)}°F)`;
 
         // 3. Description + descriptor
         descDisplay.textContent = conditions;
@@ -88,21 +121,11 @@ async function getRealWeather() {
         document.getElementById('wind').textContent      = data.wind.speed;
         document.getElementById('feelsLike').textContent = feelsLike;
 
-        // 5. Icon + animation
-        iconDiv.className = '';
-        if (temp >= 30) {
-            iconDiv.textContent = '🥵';
-            iconDiv.classList.add('hot-animation');
-        } else if (temp >= 25 && temp <= 28) {
-            iconDiv.textContent = '🌟';
-            iconDiv.classList.add('perfect-animation');
-        } else if (temp >= 15) {
-            iconDiv.textContent = '☀️';
-            iconDiv.classList.add('perfect-animation');
-        } else {
-            iconDiv.textContent = '❄️';
-            iconDiv.classList.add('cold-animation');
-        }
+        // 5. Icon 
+        const { icon, cls: iconCls } = getIcon(temp, conditions);
+        iconDiv.className   = '';
+        iconDiv.textContent = icon;
+        iconDiv.classList.add(iconCls);
 
     } catch (err) {
         descDisplay.innerHTML = `<span style="color:#fb7185;">${err.message}</span>`;
@@ -111,10 +134,15 @@ async function getRealWeather() {
         bentoGrid.style.transform = 'translateY(15px)';
         iconDiv.textContent = '⚠️';
         iconDiv.className   = '';
+
+    } finally {
+        // Runs whether the fetch succeeded or failed — button always resets
+        setLoadingState(false);
     }
 }
 
-// EVENT LISTENERS
+//  EVENT LISTENERS
+
 document.getElementById('nameInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') document.getElementById('cityInput').focus();
 });
