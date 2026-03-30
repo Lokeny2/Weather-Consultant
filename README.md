@@ -1,5 +1,5 @@
 ##  Weather Consultant
-A responsive web application that provides personalized weather advice based on temperature inputs. This project demonstrates 
+A responsive web application that provides personalized weather advice based on weather data This project demonstrates 
 my understanding of JavaScript logic, CSS3 styling, and DOM manipulation.
 
 ##  Live Demo
@@ -22,6 +22,11 @@ During this project, I mastered several programming concepts:
 2. **Boolean Logic:** Managing multiple conditions using logical operators.
 3. **The DOM:** Connecting JavaScript logic to HTML elements to create an interactive experience.
 4. **Separation of Concerns:** Organizing code into three distinct files for better maintainability.
+
+## Future Improvements
+1.Use real-time data from  weather APIs to advice the users
+2.Add a seven-day forecast section
+3.add famous weather related quotes
 
 ---
 *Created as part of my #CodingJourney documenting my path to becoming a fullstack developer.*
